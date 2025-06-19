@@ -19,9 +19,26 @@ modulo = st.sidebar.selectbox("Selecciona un módulo", (
     "Bonus: Automatización CI/CD"
 ))
 
-# Cargar archivo correspondiente (esto se irá actualizando)
+# Submenús por módulo
 if modulo == "Módulo 1: Fundamentos":
-    exec(open("Modulo_01_fundamentos/01_hello_world.py", encoding="utf-8").read())
+    clase = st.sidebar.radio("Selecciona la clase:", [
+        "Clase 1: Hello, Streamlit",
+        "Clase 2: Widgets básicos",
+        "Clase 3: Sidebar y layout"
+    ])
+    
+    if clase == "Clase 1: Hello, Streamlit":
+        exec(open("modulo_01_fundamentos/01_hello_world.py", encoding="utf-8").read())
+    elif clase == "Clase 2: Widgets básicos":
+        exec(open("modulo_01_fundamentos/02_widgets_basicos.py", encoding="utf-8").read())
+    elif clase == "Clase 3: Sidebar y layout":
+        exec(open("modulo_01_fundamentos/03_sidebar_layout.py", encoding="utf-8").read())
+
+# Aquí dejaremos los demás módulos en blanco hasta que los construyamos
+else:
+    st.warning("🎓 Este módulo aún está en construcción. Pronto estará disponible.")
+
+
 
 # El resto se irá añadiendo a medida que avancemos
 st.sidebar.markdown("---")

@@ -1,100 +1,155 @@
-# 📊 Curso Completo de Streamlit: De Principiante a Experto
+# 🎓 Curso Streamlit Interactivo
 
-¡Bienvenido, futuro maestro de las apps interactivas! Este repositorio contiene un curso práctico y progresivo para dominar Streamlit, ideal para quienes dominan Python y buscan llevar sus análisis de datos al siguiente nivel.
+Un curso completo e interactivo para aprender Streamlit desde cero hasta aplicaciones avanzadas, diseñado por **Daniel Mardones**.
 
----
+## ✨ Características
 
-## 🚀 Objetivo del curso
+- **Estructura modular** organizada por niveles de dificultad
+- **Gestión avanzada de estado** para evitar errores del DOM
+- **Keys únicas** para todos los widgets
+- **Interfaz limpia** con pestañas y contenedores
+- **Código de ejemplo** ejecutable en cada lección
 
-Aprender a construir aplicaciones web interactivas usando [Streamlit](https://streamlit.io/), desde conceptos básicos hasta despliegue y automatización.
+## 🏗️ Arquitectura del Proyecto
 
----
+```
+curso-streamlit/
+├── main.py                 # Punto de entrada principal
+├── requirements.txt        # Dependencias
+├── utils/                  # Utilidades compartidas
+│   ├── __init__.py
+│   └── state_manager.py    # Gestión segura del estado
+├── modulo_01_fundamentos/  # Módulo 1: Fundamentos
+│   ├── __init__.py
+│   ├── hello_world.py      # Clase 1: Hello, Streamlit
+│   ├── widgets_basicos.py  # Clase 2: Widgets básicos  
+│   └── sidebar_layout.py   # Clase 3: Sidebar y layout
+├── modulo_02_visualizacion/    # (En construcción)
+├── modulo_03_interactividad/   # (En construcción)
+├── modulo_04_aplicaciones/     # (En construcción)
+├── modulo_05_despliegue/       # (En construcción)
+└── modulo_06_bonus_automatizacion/ # (En construcción)
+```
 
-## 📦 Requisitos previos
+## 🚀 Instalación y Uso
 
-- Python 3.7+
-- Conocimientos básicos de programación en Python
-- Entorno configurado con VS Code o similar
-
-Instala las dependencias básicas:
-
+### 1. Clonar el repositorio
 ```bash
-# Crear el entorno virtual llamado "streamlit"
-python -m venv streamlit
-
-# Activarlo en sistemas operativos comunes:
-# En Windows
-streamlit\Scripts\activate
-
-# En Linux o macOS
-source streamlit/bin/activate
 git clone https://github.com/Denniels/curso-streamlit.git
+cd curso-streamlit
+```
 
+### 2. Instalar dependencias
+```bash
 pip install -r requirements.txt
 ```
 
-🧭 Ruta de aprendizaje
+### 3. Ejecutar la aplicación
 
-✅ Módulo 1: Fundamentos de Streamlit
+#### ⭐ Versión Recomendada - V4.1 (DOM-Safe + Navegación Corregida)
+```bash
+streamlit run main_v4_fixed.py --server.headless true
+```
 
-- [x] 01_hello_world.py – Tu primera app interactiva
-- [ ] 02_widgets_basicos.py – Uso de botones, sliders, y selectores
-- [ ] 03_sidebar_layout.py – Creando apps más organizadas
-- [ ] 04_estructuras_basicas.md – Markdown, media y diseño visual
+#### Versión V4.0 (Problemas de navegación conocidos)
+```bash
+streamlit run main_v4.py --server.headless true
+```
 
-📊 Módulo 2: Visualización de Datos
+#### Versión V3 (Solo DOM-Safe)
+```bash
+streamlit run main_v3.py --server.headless true
+```
 
-- [ ] 01_graficos_matplotlib.py – Gráficos básicos
-- [ ] 02_visualizacion_interactiva_plotly.py
-- [ ] 03_tablas_interactivas.py – st.dataframe, filtros y estilo
-- [ ] 04_dashboard_exploratorio.py – Mini proyecto de dataset chileno
+#### Versión Original
+```bash
+streamlit run main.py
+```
 
-🔁 Módulo 3: Interactividad Avanzada
+**⚡ Recomendación**: Usa `main_v4_fixed.py` que resuelve los errores DOM y tiene navegación completamente funcional entre todos los módulos educativos.
 
-- [ ] 01_session_state.py – Manejo de estados
-- [ ] 02_multipagina.py – Navegación con múltiples páginas
-- [ ] 03_file_uploader.py – Lectura dinámica de archivos
-- [ ] 04_inputs_reactivos.py – Apps inteligentes según el usuario
+## 🛡️ Mejoras Implementadas para la Estabilidad
 
-🌎 Módulo 4: Aplicaciones Especializadas
+### ✅ Gestión de Estado Optimizada
+- **Una sola configuración de página** en `main.py`
+- **Sistema de limpieza automática** de estado entre módulos
+- **Keys únicas** generadas automáticamente para cada widget
+- **Prevención de conflictos** entre componentes
 
-- [ ] App ambiental con datos de OpenAQ
-- [ ] Dashboard financiero conectado a SQL
-- [ ] Explorador de presupuestos públicos + mapas
+### ✅ Arquitectura Robusta
+- **Separación de responsabilidades** por módulos
+- **Utilidades centralizadas** para gestión de estado
+- **Contenedores seguros** (`st.container()`) para encapsular widgets
+- **Debug opcional** para monitorear el estado de la aplicación
 
-🚀 Módulo 5: Despliegue y Optimización
+### ✅ Prevención de Errores DOM
+- Eliminación de múltiples llamadas a `st.set_page_config()`
+- Limpieza automática de widgets al cambiar entre módulos
+- Keys únicas y consistentes para evitar conflictos
+- Gestión centralizada del estado de la aplicación
 
-- [ ] Despliegue en Streamlit Cloud
-- [ ] Configuración de requirements.txt y secrets.toml
-- [ ] Uso de @st.cache_data y buenas prácticas
-- [ ] Seguridad y experiencia de usuario
+## 📚 Contenido del Curso
 
-🛠️ Bonus: Automatización + CI/CD
+### Módulo 1: Fundamentos ✅
+- **Clase 1**: Hello, Streamlit - Primeros pasos
+- **Clase 2**: Widgets básicos - Interactividad
+- **Clase 3**: Sidebar y layout - Organización
 
-- [ ] Automatización de actualización de datos
-- [ ] GitHub Actions + Streamlit Cloud: despliegue continuo
+### Módulos Futuros 🚧
+- **Módulo 2**: Visualización de Datos
+- **Módulo 3**: Interactividad Avanzada  
+- **Módulo 4**: Aplicaciones Especializadas
+- **Módulo 5**: Despliegue y Optimización
+- **Bonus**: Automatización CI/CD
+
+## 🔧 Características Técnicas
+
+### Gestión de Estado
+```python
+from utils.state_manager import set_current_module, safe_widget_key
+
+# Configurar módulo actual y limpiar estado anterior
+set_current_module('mi_modulo', ['prefijos_', 'a_', 'limpiar_'])
+
+# Generar keys seguras para widgets
+widget_key = safe_widget_key("mi_widget")
+```
+
+### Debug y Monitoreo
+- Panel de debug opcional en sidebar
+- Visualización del estado actual de la aplicación
+- Conteo de keys activas por módulo
+
+## 🎯 Mejores Prácticas Implementadas
+
+1. **Una sola llamada a `st.set_page_config()`** al inicio
+2. **Keys únicas** para todos los widgets interactivos
+3. **Limpieza automática** de estado entre módulos
+4. **Contenedores seguros** para encapsular componentes
+5. **Gestión centralizada** del estado de la aplicación
+6. **Arquitectura modular** escalable
+
+## 🐛 Solución de Problemas
+
+### Error "removeChild DOM"
+Este error ha sido solucionado mediante:
+- ✅ Configuración única de página
+- ✅ Keys únicas para widgets
+- ✅ Limpieza automática de estado
+- ✅ Gestión centralizada del estado
+
+### Debug
+Activar el panel de debug en el sidebar para monitorear:
+- Módulo actual activo
+- Keys de widgets en memoria
+- Estado de la aplicación
+
+## 👨‍💻 Autor
+
+**Daniel Mardones**  
+Mentor técnico en Python y Data Science  
+[GitHub](https://github.com/Denniels)
 
 ---
-## 📂 Estructura recomendada del repositorio
-curso-streamlit/
-├── modulo_01_fundamentos/
-├── modulo_02_visualizacion/
-├── modulo_03_interactividad/
-├── modulo_04_aplicaciones/
-├── modulo_05_despliegue/
-├── bonus_automatizacion/
-├── requirements.txt
-└── README.md
 
----
-
-
-🧠 Mentor y creador del curso
-📌 Diseñado por Daniel Mardones, con mentoría técnica de variadas fuentes obsesionada con buen código ✨.
-
-¿Listo para comenzar? ¡Dale un git commit -m "Inicio del curso de Streamlit" y nos vamos a construir magia!
-
----
-
-Este README está pensado para que puedas ir marcando tus progresos y mantener el enfoque. 🚀💻
-
+¡Aprende Streamlit de forma interactiva y construye aplicaciones web increíbles! 🚀

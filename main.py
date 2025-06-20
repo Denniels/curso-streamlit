@@ -1,360 +1,356 @@
+"""
+CURSO INTERACTIVO DE STREAMLIT
+Por Daniel Mardones
+
+Curso completo e interactivo para aprender Streamlit desde lo básico 
+hasta aplicaciones avanzadas con navegación DOM-safe.
+Asegurate que el modulo este cargado correctamente en informacion de debug.
+"""
+
 import streamlit as st
+import hashlib
 import time
-from typing import Dict, Any
+import sys
+import os
 
-# ✅ CONFIGURACIÓN ÚNICA Y CRÍTICA PARA STREAMLIT 1.46.0
-st.set_page_config(
-    page_title="Curso Streamlit Interactivo",
-    page_icon="🎓",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# ✅ Configuración de página (SOLO UNA VEZ)
+if 'page_configured' not in st.session_state:
+    st.set_page_config(
+        page_title="Curso Streamlit Interactivo",
+        page_icon="🎓",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    st.session_state.page_configured = True
 
-# ✅ SOLUCIÓN RADICAL: Sistema de páginas completamente aisladas
-class StreamlitPageManager:
-    """Gestor de páginas que previene completamente los errores del DOM."""
-    
-    def __init__(self):
-        self.initialize_state()
-    
-    def initialize_state(self):
-        """Inicialización única y segura del estado."""
-        if 'page_manager_initialized' not in st.session_state:
-            st.session_state.page_manager_initialized = True
-            st.session_state.current_page_id = "home"
-            st.session_state.navigation_lock = False
-            st.session_state.page_cache = {}
-    
-    def safe_navigation(self, page_id: str):
-        """Navegación segura que previene conflictos del DOM."""
-        if st.session_state.navigation_lock:
-            return st.session_state.current_page_id
+# ✅ Agregar los directorios de módulos al path
+current_dir = os.path.dirname(__file__)
+for modulo in ['modulo_01_fundamentos', 'modulo_02_visualizacion', 'modulo_03_interactividad', 
+               'modulo_04_aplicaciones', 'modulo_05_despliegue', 'modulo_06_bonus_automatizacion',
+               'modulo_07_evaluacion']:
+    module_dir = os.path.join(current_dir, modulo)
+    if module_dir not in sys.path:
+        sys.path.insert(0, module_dir)
+
+# ✅ Importar módulos existentes
+@st.cache_resource
+def import_modules():
+    """Importa módulos con cache para optimizar."""
+    try:
+        # Módulo 1: Fundamentos
+        import hello_world
+        import widgets_basicos
+        import sidebar_layout
         
-        if st.session_state.current_page_id != page_id:
-            st.session_state.navigation_lock = True
-            st.session_state.current_page_id = page_id
-            # Forzar rerun limpio
-            st.rerun()
+        # Módulo 2: Visualización
+        import graficos_basicos
+        import dashboards_interactivos
         
-        return page_id
-    
-    def unlock_navigation(self):
-        """Desbloquea la navegación después del renderizado."""
-        st.session_state.navigation_lock = False
+        # Módulo 3: Interactividad
+        import manejo_datos
+        
+        # Módulo 4: Aplicaciones
+        import calculadora_financiera
+        import sistema_inventario
+        
+        # Módulo 5: Despliegue
+        import streamlit_cloud
+          # Módulo 6: Bonus Automatización
+        import github_actions
+        
+        # Módulo 7: Evaluación
+        import test_interactivo
+        
+        return {
+            # Módulo 1
+            'hello_world': hello_world,
+            'widgets_basicos': widgets_basicos,
+            'sidebar_layout': sidebar_layout,
+            # Módulo 2
+            'graficos_basicos': graficos_basicos,
+            'dashboards_interactivos': dashboards_interactivos,
+            # Módulo 3
+            'manejo_datos': manejo_datos,
+            # Módulo 4
+            'calculadora_financiera': calculadora_financiera,
+            'sistema_inventario': sistema_inventario,            # Módulo 5
+            'streamlit_cloud': streamlit_cloud,
+            # Módulo 6
+            'github_actions': github_actions,
+            # Módulo 7
+            'test_interactivo': test_interactivo
+        }
+    except ImportError as e:
+        st.error(f"❌ Error importando módulos: {e}")
+        st.error(f"🔍 Directorio de módulos: {module_dir}")
+        st.error(f"📁 Existe el directorio: {os.path.exists(module_dir)}")
+        if os.path.exists(module_dir):
+            files = os.listdir(module_dir)
+            st.error(f"📋 Archivos encontrados: {files}")
+        st.stop()
+        return None
 
-# Instancia global del gestor
-page_manager = StreamlitPageManager()
+# ✅ Obtener módulos importados
+modules = import_modules()
 
-def render_navigation():
-    """Sistema de navegación completamente rediseñado."""
+def generate_safe_key(base_key: str, context: str = "default") -> str:
+    """Genera keys únicos y seguros."""
+    combined = f"{context}_{base_key}_{time.time_ns()}"
+    hash_obj = hashlib.md5(combined.encode())
+    return f"{context}_{base_key}_{hash_obj.hexdigest()[:8]}"
+
+def initialize_navigation_state():
+    """Inicializa el estado de navegación."""
+    if 'navigation' not in st.session_state:
+        st.session_state.navigation = {
+            'current_module': 'Módulo 1: Fundamentos',
+            'current_class': 'Clase 1: Hello, Streamlit',
+            'last_update': time.time()
+        }
+    return st.session_state.navigation
+
+def render_sidebar_navigation():
+    """Renderiza la navegación en el sidebar."""
+    nav_state = initialize_navigation_state()
     
     with st.sidebar:
-        st.markdown("# 📚 Navegación")
+        st.markdown("# 📚 Curso Streamlit")
+        st.markdown("*Por Daniel Mardones*")
+        st.markdown("---")
         
-        # ✅ Selectbox con manejo de estado propio
-        modulo_options = [
-            "Módulo 1: Fundamentos",
-            "Módulo 2: Visualización", 
-            "Módulo 3: Interactividad",
-            "Módulo 4: Aplicaciones",
-            "Módulo 5: Despliegue",
-            "Bonus: Automatización"
-        ]
-        
-        # Key único y estático
-        selected_modulo = st.selectbox(
-            "Selecciona un módulo",
-            modulo_options,
-            key="main_modulo_selector_v2",
-            index=0
+        # ✅ Selector de módulo con key fijo
+        selected_module = st.selectbox(
+            "📖 Selecciona un módulo:",            [
+                "Módulo 1: Fundamentos",
+                "Módulo 2: Visualización",
+                "Módulo 3: Interactividad", 
+                "Módulo 4: Aplicaciones",
+                "Módulo 5: Despliegue",
+                "Bonus: Automatización",
+                "Módulo 7: Evaluación"
+            ],
+            index=0,
+            key="module_selector_fixed"
         )
         
-        selected_clase = None
-        if selected_modulo == "Módulo 1: Fundamentos":
-            clase_options = [
-                "Clase 1: Hello, Streamlit",
-                "Clase 2: Widgets básicos",
-                "Clase 3: Sidebar y layout"
-            ]
-            
-            selected_clase = st.radio(
-                "Selecciona la clase:",
-                clase_options,
-                key="main_clase_selector_v2"
+        # ✅ Selector de clase según el módulo seleccionado
+        selected_class = None
+        if selected_module == "Módulo 1: Fundamentos":
+            selected_class = st.radio(
+                "📝 Selecciona la clase:",
+                [
+                    "Clase 1: Hello, Streamlit",
+                    "Clase 2: Widgets básicos",
+                    "Clase 3: Sidebar y layout"
+                ],
+                index=0,
+                key="class_selector_modulo1"
+            )
+        elif selected_module == "Módulo 2: Visualización":
+            selected_class = st.radio(
+                "📊 Selecciona la clase:",
+                [
+                    "Clase 1: Gráficos básicos",
+                    "Clase 2: Dashboards interactivos"
+                ],
+                index=0,
+                key="class_selector_modulo2"
+            )
+        elif selected_module == "Módulo 3: Interactividad":
+            selected_class = st.radio(
+                "🔄 Selecciona la clase:",
+                [
+                    "Clase 1: Manejo de datos"
+                ],
+                index=0,
+                key="class_selector_modulo3"
+            )
+        elif selected_module == "Módulo 4: Aplicaciones":
+            selected_class = st.radio(
+                "🏗️ Selecciona la clase:",
+                [
+                    "Clase 1: Calculadora financiera",
+                    "Clase 2: Sistema de inventario"
+                ],
+                index=0,
+                key="class_selector_modulo4"
+            )
+        elif selected_module == "Módulo 5: Despliegue":
+            selected_class = st.radio(
+                "☁️ Selecciona la clase:",                [
+                    "Clase 1: Streamlit Cloud"
+                ],
+                index=0,
+                key="class_selector_modulo5"
+            )
+        elif selected_module == "Bonus: Automatización":
+            selected_class = st.radio(
+                "🤖 Selecciona la clase:",
+                [
+                    "Clase 1: GitHub Actions"
+                ],
+                index=0,
+                key="class_selector_modulo6"
+            )
+        elif selected_module == "Módulo 7: Evaluación":
+            selected_class = st.radio(
+                "🎯 Selecciona la clase:",
+                [
+                    "Clase 1: Test Interactivo"
+                ],
+                index=0,
+                key="class_selector_modulo7"
             )
         
-        return selected_modulo, selected_clase
+        # ✅ Información de estado
+        st.markdown("---")
+        st.markdown("### 📊 Estado Actual")
+        st.write(f"**Módulo:** {selected_module}")
+        if selected_class:
+            st.write(f"**Clase:** {selected_class}")
+          # ✅ Actualizar estado solo si cambió
+        if (nav_state['current_module'] != selected_module or 
+            nav_state['current_class'] != selected_class):
+            
+            nav_state['current_module'] = selected_module
+            nav_state['current_class'] = selected_class
+            nav_state['last_update'] = time.time()
+            
+            # ✅ Limpiar cache de módulos para evitar conflictos DOM
+            if hasattr(st, 'cache_resource'):
+                st.cache_resource.clear()
+            
+            # ✅ Forzar rerun para actualizar contenido
+            st.rerun()
+        
+        return selected_module, selected_class
 
-def render_hello_world_page():
-    """Página Hello World completamente aislada."""
+def render_main_content(selected_module: str, selected_class: str):
+    """Renderiza el contenido principal."""
     
-    # ✅ Contenedor único con ID específico
-    page_container = st.container()
+    # ✅ Header principal
+    st.title("🎓 Curso Completo e Interactivo de Streamlit")
+    st.markdown("""
+    **Bienvenido al curso interactivo de Streamlit por Daniel Mardones**
     
-    with page_container:
-        st.title("🎈 Módulo 1: ¡Hola, Streamlit!")
-        
-        st.markdown("""
-        Explora cada pestaña para ver cómo construir tu primera app con Streamlit.  
-        Esta lección interactiva te permite ejecutar el código, ver el resultado y aprender su sintaxis.
-        """)
-        
-        # ✅ Tabs con keys únicos y estáticos
-        tab1, tab2, tab3, tab4 = st.tabs([
-            "👋 Título y texto",
-            "📝 Markdown enriquecido",
-            "🎛️ Botón interactivo", 
-            "📘 Créditos"
-        ])
-        
-        with tab1:
-            st.subheader("👋 Título y subtítulo")
-            st.title("¡Hola, Streamlit!")
-            st.write("Este es tu primer texto interactivo.")
-            
-            st.code("""
-st.title("¡Hola, Streamlit!")
-st.write("Este es tu primer texto interactivo.")
-""", language="python")
-        
-        with tab2:
-            st.subheader("📝 Markdown enriquecido")
-            st.markdown("""
-### ¿Qué puedes hacer con Streamlit?
-
-- Crear apps web desde Python puro  
-- Usar Markdown como este para dar formato  
-- Incluir enlaces: [Visitar Streamlit](https://streamlit.io)
-""")
-            
-            st.code("""
-st.markdown(\"\"\"
-### ¿Qué puedes hacer con Streamlit?
-
-- Crear apps web desde Python puro  
-- Usar Markdown como este para dar formato  
-- Incluir enlaces: [Visitar Streamlit](https://streamlit.io)
-\"\"\")
-""", language="python")
-        
-        with tab3:
-            st.subheader("🎛️ Botón interactivo")
-            
-            # ✅ Key completamente único para evitar conflictos
-            if st.button("Presiona para saludar", key="hello_world_btn_unique_v2"):
-                st.success("¡Bienvenido al mundo Streamlit, soy tu mentor Daniel Mardones! 🎉")
-            
-            st.code("""
-if st.button("Presiona para saludar"):
-    st.success("¡Bienvenido al mundo Streamlit!")
-""", language="python")
-        
-        with tab4:
-            st.subheader("📘 Créditos")
-            st.info("Curso creado por Daniel Mardones\nMentoría técnica en Python y Data Science 🤖✨")
-
-def render_widgets_page():
-    """Página Widgets completamente aislada."""
+    Aprende Streamlit desde lo básico hasta aplicaciones avanzadas con lecciones interactivas.
     
-    page_container = st.container()
+    Asegurate que el modulo este cargado correctamente en informacion de debug.
+    """)
+      # ✅ Información de versión
+    col1, col2, col3 = st.columns([2, 1, 1])
+    with col1:
+        st.info("🎓 **Curso Streamlit Interactivo**: Navegación optimizada + DOM-safe")
+    with col2:
+        st.metric("Streamlit", st.__version__)
+    with col3:
+        st.metric("Módulos", "11 clases totales")
     
-    with page_container:
-        st.title("🎛️ Clase 2: Interacción con Widgets")
-        st.markdown("""
-        En esta clase exploraremos botones, sliders, entradas de texto y selectores.  
-        Las apps que construyas serán dinámicas e interactivas.
-        """)
-        
-        # ✅ Tabs con keys únicos
-        tab1, tab2, tab3, tab4 = st.tabs([
-            "🔘 Botón",
-            "🎚️ Slider", 
-            "🧾 Text Input",
-            "📋 Selectbox"
-        ])
-        
-        with tab1:
-            col1, col2 = st.columns([1, 2])
-            
-            with col1:
-                # ✅ Key único para evitar conflictos
-                clic = st.button("Haz clic aquí 👆", key="widgets_btn_unique_v2")
-            
-            with col2:
-                if clic:
-                    st.success("¡Click recibido!")
-            
-            st.code("""
-clic = st.button("Haz clic aquí 👆")
-if clic:
-    st.success("¡Click recibido!")
-""", language="python")
-        
-        with tab2:
-            # ✅ Key único para slider
-            edad = st.slider("Tu edad (años)", 0, 100, 25, key="widgets_slider_unique_v2")
-            st.write(f"Tienes {edad} años.")
-            
-            st.code("""
-edad = st.slider("Tu edad (años)", 0, 100, 25)
-st.write(f"Tienes {edad} años.")
-""", language="python")
-        
-        with tab3:
-            # ✅ Key único para text input
-            nombre = st.text_input("¿Cómo te llamas?", key="widgets_input_unique_v2")
-            if nombre:
-                st.success(f"Hola, {nombre} 👋")
-            
-            st.code("""
-nombre = st.text_input("¿Cómo te llamas?")
-if nombre:
-    st.success(f"Hola, {nombre} 👋")
-""", language="python")
-        
-        with tab4:
-            # ✅ Key único para selectbox
-            lenguaje = st.selectbox(
-                "Tu lenguaje favorito 💻",
-                ["Python", "SQL", "R", "JavaScript", "Otro"],
-                key="widgets_select_unique_v2"
-            )
-            st.info(f"Elegiste: **{lenguaje}**")
-            
-            st.code("""
-lenguaje = st.selectbox("Tu lenguaje favorito 💻", 
-                       ["Python", "SQL", "R", "JavaScript", "Otro"])
-st.info(f"Elegiste: {lenguaje}")
-""", language="python")
-
-def render_sidebar_page():
-    """Página Sidebar completamente aislada."""
+    st.markdown("---")
     
-    page_container = st.container()
-    
-    with page_container:
-        st.title("🧭 Clase 3: Organización con Sidebar")
-        st.markdown("""
-        Streamlit te permite mover widgets al sidebar para mantener el área principal más limpia y enfocada en resultados.
-        """)
+    # ✅ Renderizar contenido basado en selección
+    if selected_class:  # Si hay una clase seleccionada
         
-        # ✅ Tabs con keys únicos
-        tab1, tab2, tab3 = st.tabs([
-            "📐 Layout básico",
-            "📊 Parámetros dinámicos", 
-            "🧠 Vista final"
-        ])
+        # ✅ Mapeo completo de clases a módulos
+        class_to_module = {
+            # Módulo 1: Fundamentos
+            "Clase 1: Hello, Streamlit": modules['hello_world'],
+            "Clase 2: Widgets básicos": modules['widgets_basicos'],
+            "Clase 3: Sidebar y layout": modules['sidebar_layout'],
+            # Módulo 2: Visualización  
+            "Clase 1: Gráficos básicos": modules['graficos_basicos'],
+            "Clase 2: Dashboards interactivos": modules['dashboards_interactivos'],
+            # Módulo 3: Interactividad
+            "Clase 1: Manejo de datos": modules['manejo_datos'],
+            # Módulo 4: Aplicaciones
+            "Clase 1: Calculadora financiera": modules['calculadora_financiera'],
+            "Clase 2: Sistema de inventario": modules['sistema_inventario'],            # Módulo 5: Despliegue
+            "Clase 1: Streamlit Cloud": modules['streamlit_cloud'],
+            # Módulo 6: Bonus Automatización
+            "Clase 1: GitHub Actions": modules['github_actions'],
+            # Módulo 7: Evaluación
+            "Clase 1: Test Interactivo": modules['test_interactivo']
+        }
         
-        with tab1:
-            st.subheader("📐 Layout básico con sidebar")
-            
-            # ✅ Widgets en sidebar con keys únicos
-            with st.sidebar:
-                st.markdown("### 👤 Perfil de Usuario")
-                user_name = st.text_input("Escribe tu nombre:", key="sidebar_user_unique_v2")
-                edad = st.slider("Tu edad:", 18, 99, 25, key="sidebar_edad_unique_v2")
-            
-            if user_name:
-                st.success(f"Bienvenido, {user_name} 👋 (Edad: {edad})")
-            
-            st.code("""
-# En el sidebar
-user_name = st.sidebar.text_input("Escribe tu nombre:")
-edad = st.sidebar.slider("Tu edad:", 18, 99, 25)
-""", language="python")
-        
-        with tab2:
-            st.subheader("📊 Parámetros dinámicos (Ejemplo con gráfico)")
-            
-            with st.sidebar:
-                st.markdown("### ⚙️ Configuración del Gráfico")
-                puntos = st.slider("N° de puntos", 10, 500, 100, key="sidebar_puntos_unique_v2")
-                ruido = st.slider("Nivel de ruido", 0.0, 1.0, 0.1, key="sidebar_ruido_unique_v2")
-            
-            # Generar gráfico
-            import numpy as np
-            import pandas as pd
-            
-            x = np.linspace(0, 10, puntos)
-            y = np.sin(x) + np.random.normal(scale=ruido, size=puntos)
-            df = pd.DataFrame({"x": x, "y": y})
-            
-            st.line_chart(df.set_index("x"))
-            
-            st.code("""
-puntos = st.sidebar.slider("N° de puntos", 10, 500, 100)
-ruido = st.sidebar.slider("Nivel de ruido", 0.0, 1.0, 0.1)
-
-x = np.linspace(0, 10, puntos)
-y = np.sin(x) + np.random.normal(scale=ruido, size=puntos)
-df = pd.DataFrame({"x": x, "y": y})
-st.line_chart(df.set_index("x"))
-""", language="python")
-        
-        with tab3:
-            st.subheader("🧠 ¿Por qué usar sidebar?")
-            st.markdown("""
-- Separa la entrada de parámetros del contenido visual  
-- Mejora la experiencia de usuario  
-- Ideal para dashboards y simuladores
-            """)
-
-def render_main_content(modulo: str, clase: str):
-    """Renderiza el contenido principal con control absoluto."""
-    
-    # ✅ Determinar qué página mostrar
-    if modulo == "Módulo 1: Fundamentos" and clase:
-        if clase == "Clase 1: Hello, Streamlit":
-            page_id = page_manager.safe_navigation("hello_world")
-            if page_id == "hello_world":
-                render_hello_world_page()
-        
-        elif clase == "Clase 2: Widgets básicos":
-            page_id = page_manager.safe_navigation("widgets")
-            if page_id == "widgets":
-                render_widgets_page()
-        
-        elif clase == "Clase 3: Sidebar y layout":
-            page_id = page_manager.safe_navigation("sidebar")
-            if page_id == "sidebar":
-                render_sidebar_page()
+        if selected_class in class_to_module:
+            try:
+                # ✅ Mostrar información de la clase actual
+                st.markdown(f"### 🎯 {selected_class}")
+                st.markdown(f"**Módulo:** {selected_module}")
+                  # ✅ Contenedor para el módulo
+                module_container = st.container()
+                
+                with module_container:
+                    # ✅ Ejecutar el módulo correspondiente
+                    current_module = class_to_module[selected_class]
+                    
+                    # ✅ Debug info
+                    with st.expander("🔍 Información de Debug", expanded=False):
+                        st.write(f"**Módulo ejecutado:** {current_module.__name__}")
+                        st.write(f"**Función run disponible:** {hasattr(current_module, 'run')}")
+                        st.write(f"**Timestamp:** {time.strftime('%H:%M:%S')}")
+                    
+                    # ✅ Ejecutar función run del módulo con protección DOM
+                    try:
+                        if hasattr(current_module, 'run'):
+                            # Crear contenedor único para cada módulo
+                            with st.container():
+                                current_module.run()
+                        else:
+                            st.error(f"❌ El módulo {current_module.__name__} no tiene función 'run()'")
+                    except Exception as module_error:
+                        st.error(f"❌ Error específico del módulo {current_module.__name__}: {str(module_error)}")
+                        with st.expander("🔍 Detalles del error del módulo"):
+                            st.exception(module_error)
+                        
+            except Exception as e:
+                st.error(f"❌ Error ejecutando la clase: {str(e)}")
+                with st.expander("🔍 Detalles del error"):
+                    st.exception(e)
+        else:
+            st.warning(f"⚠️ La clase '{selected_class}' no está disponible aún.")
     
     else:
-        st.warning("🎓 Este módulo aún está en construcción. Pronto estará disponible.")
-    
-    # ✅ Desbloquear navegación después del renderizado
-    page_manager.unlock_navigation()
-
-def render_footer():
-    """Footer estático."""
-    with st.sidebar:
-        st.markdown("---")
-        st.markdown("**Creado por Daniel Mardones** 🧠")
-        st.markdown("Curso interactivo de Streamlit")
-        st.markdown("[GitHub](https://github.com/Denniels)")
+        # ✅ Contenido para módulos en construcción o sin clase seleccionada
+        st.warning("🚧 Selecciona una clase del módulo para ver el contenido")
+        st.markdown("""        ### 📚 Estado de Módulos:
+        - ✅ **Módulo 1: Fundamentos** (3 clases disponibles)
+        - ✅ **Módulo 2: Visualización** (2 clases disponibles)
+        - ✅ **Módulo 3: Interactividad** (1 clase disponible)
+        - ✅ **Módulo 4: Aplicaciones** (2 clases disponibles)
+        - ✅ **Módulo 5: Despliegue** (1 clase disponible)
+        - ✅ **Bonus: Automatización** (1 clase disponible)
+        - ✅ **Módulo 7: Evaluación** (1 clase disponible)
+        
+        ### 🎯 Cómo usar el curso:
+        1. **Selecciona un módulo** en el menú lateral
+        2. **Elige una clase** del módulo seleccionado
+        3. **Interactúa** con las lecciones y ejemplos
+        4. **Practica** modificando los parámetros
+        """)
 
 def main():
-    """Función principal con control absoluto del flujo de renderizado."""
-    
-    # ✅ 1. Inicializar gestor de páginas
-    page_manager.initialize_state()
-    
-    # ✅ 2. Título principal (renderizado una sola vez)
-    st.title("Curso completo e interactivo de Streamlit")
-    st.markdown("""
-    Bienvenido al curso interactivo de Streamlit. Aquí aprenderás a dominar Streamlit 
-    desde lo más básico hasta aplicaciones avanzadas.
-    """)
-    
-    # ✅ 3. Navegación estable
-    modulo, clase = render_navigation()
-    
-    # ✅ 4. Contenido con control absoluto
-    render_main_content(modulo, clase)
-    
-    # ✅ 5. Footer estático
-    render_footer()
+    """Función principal corregida."""
+    try:
+        # ✅ 1. Navegación en sidebar
+        selected_module, selected_class = render_sidebar_navigation()
+        
+        # ✅ 2. Contenido principal
+        render_main_content(selected_module, selected_class)
+        
+        # ✅ 3. Footer en sidebar
+        with st.sidebar:
+            st.markdown("---")
+            st.markdown("### 👨‍💻 Autor")
+            st.markdown("**Daniel Mardones**")
+            st.markdown("🧠 Mentor en Python & Data Science")
+            st.markdown("[🔗 GitHub](https://github.com/Denniels)")
+            
+    except Exception as e:
+        st.error(f"❌ Error en la aplicación principal: {str(e)}")
+        with st.expander("🔍 Detalles del error"):
+            st.exception(e)
 
-# ✅ EJECUTAR APLICACIÓN
+# ✅ Ejecutar aplicación
 if __name__ == "__main__":
     main()

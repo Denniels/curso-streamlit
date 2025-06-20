@@ -343,7 +343,7 @@ def main():
             st.markdown("---")
             st.markdown("### 👨‍💻 Autor")
             st.markdown("**Daniel Mardones**")
-            st.markdown("🧠 Mentor en Python & Data Science")
+            st.markdown("🧠 Especialista en Python & Data Science")
             st.markdown("[🔗 GitHub](https://github.com/Denniels)")
             
     except Exception as e:

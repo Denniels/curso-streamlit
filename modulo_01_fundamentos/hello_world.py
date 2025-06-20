@@ -53,15 +53,15 @@ st.markdown(\"\"\"
             st.subheader("🎛️ Botón interactivo")
             # ✅ Key completamente estático y único
             if st.button("Presiona para saludar", key="hello_world_saludar_btn_static"):
-                st.success("¡Bienvenido al mundo Streamlit, soy tu mentor Daniel Mardones! 🎉")
+                st.success("¡Bienvenido al mundo Streamlit, desarrollado por Daniel Mardones! 🎉")
             st.code("""
 if st.button("Presiona para saludar"):
-    st.success("¡Bienvenido al mundo Streamlit, soy tu mentor Daniel Mardones! 🎉")
+    st.success("¡Bienvenido al mundo Streamlit, desarrollado por Daniel Mardones! 🎉")
 """, language="python")
 
         with tab4:
             st.subheader("📘 Créditos")
-            st.info("Curso creado por Daniel Mardones\nMentoría técnica en Python y Data Science 🤖✨")
+            st.info("Curso creado por Daniel Mardones\nEspecialidad técnica en Python y Data Science 🤖✨")
             st.code("""
-st.info("Curso creado por Daniel Mardones\\nMentoría técnica en Python y Data Science 🤖✨")
+st.info("Curso creado por Daniel Mardones\\nEspecialidad técnica en Python y Data Science 🤖✨")
 """, language="python")

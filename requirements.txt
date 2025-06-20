@@ -1,8 +1,29 @@
-streamlit
+streamlit>=1.30.0
 pandas
 numpy
 matplotlib
 plotly
+plotly-express
 xlsxwriter
 statsmodels
 openpyxl
+psutil
+requests
+scipy
+altair>=4.0.0
+pillow
+pydeck
+seaborn
+datetime
+jinja2
+jsonschema
+gitpython
+toml
+watchdog
+boto3
+botocore
+validators
+# Opcionales para tests/desarrollo (comentar para despliegue si es necesario)
+# pytest
+# pytest-streamlit
+# selenium

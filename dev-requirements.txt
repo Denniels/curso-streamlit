@@ -1,0 +1,6 @@
+pytest
+pytest-streamlit
+selenium
+black
+flake8
+isort
